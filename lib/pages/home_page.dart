@@ -1,5 +1,9 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:pacotes/pages/brasil_fields/brasil_fields_page.dart';
 import 'package:pacotes/widgets/menu_drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,7 +13,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>  with TickerProviderStateMixin{
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController tabController;
   var posPage = 0;
 
@@ -24,8 +28,8 @@ class _HomePageState extends State<HomePage>  with TickerProviderStateMixin{
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: const Text(
-              "Meu app",
+            title: Text(
+              "APP_TITLE".tr(),
             ),
           ),
           drawer: const MenuDrawer(),
@@ -44,9 +48,7 @@ class _HomePageState extends State<HomePage>  with TickerProviderStateMixin{
               Container(
                 color: Colors.yellow,
               ),
-              Container(
-                color: Colors.purple,
-              ),
+              const BrasilFieldsPage(),
             ],
           ),
           bottomNavigationBar: ConvexAppBar.badge(
@@ -56,7 +58,7 @@ class _HomePageState extends State<HomePage>  with TickerProviderStateMixin{
               TabItem(icon: Icons.map, title: 'Discovery'),
               TabItem(icon: Icons.add, title: 'Add'),
               TabItem(icon: Icons.message, title: 'Message'),
-              TabItem(icon: Icons.people, title: 'Profile'),
+              TabItem(icon: Icons.people, title: 'Brasil'),
             ],
             onTap: (int i) => tabController.index = i,
             controller: tabController,

@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:pacotes/pages/auto_size_text/auto_size_text_page.dart';
 import 'package:pacotes/pages/percent_indicator/percent_indicator_page.dart';
 
@@ -144,7 +146,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     builder: (context) => const PercentIndicatorPage(),
                   ));
             },
-          ),InkWell(
+          ),
+          InkWell(
             child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
@@ -191,6 +194,62 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   MaterialPageRoute(
                     builder: (context) => const AutoSizeTextPage(),
                   ));
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.globe,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Intl"),
+                  ],
+                )),
+            onTap: () {
+              var f = NumberFormat('###.0#', 'en_US');
+              var fBr = NumberFormat('###.0#', 'pt_BR');
+              print(f.format(12.345));
+              print(fBr.format(12.345));
+
+              var data = DateTime(2022, 05, 09);
+              print(DateFormat('EEEEE', 'en_US').format(data));
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.flag,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("pt-BR"),
+                  ],
+                )),
+            onTap: () {
+              if (context.locale.toString() == 'pt_BR') {
+                context.setLocale(const Locale('en', 'US'));
+              } else {
+                context.setLocale(const Locale('pt', 'BR'));
+              }
+              setState(() {});
+              Navigator.pop(context);
             },
           ),
         ],
