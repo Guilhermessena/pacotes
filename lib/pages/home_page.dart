@@ -1,8 +1,6 @@
-import 'package:brasil_fields/brasil_fields.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pacotes/pages/brasil_fields/brasil_fields_page.dart';
 import 'package:pacotes/widgets/menu_drawer.dart';
 

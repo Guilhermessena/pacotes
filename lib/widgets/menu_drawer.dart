@@ -1,9 +1,20 @@
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pacotes/pages/auto_size_text/auto_size_text_page.dart';
+import 'package:pacotes/pages/battery/battery_page.dart';
+import 'package:pacotes/pages/camera/camera_page.dart';
+import 'package:pacotes/pages/connectivity_plus/connectivity_plus_page.dart';
+import 'package:pacotes/pages/geolocator/geolocator_page.dart';
 import 'package:pacotes/pages/percent_indicator/percent_indicator_page.dart';
+import 'package:pacotes/pages/qr_code/qr_code_page.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class MenuDrawer extends StatefulWidget {
   const MenuDrawer({super.key});
@@ -69,7 +80,12 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     Text("Abrir Dio"),
                   ],
                 )),
-            onTap: () {},
+            onTap: () async {
+              await launchUrl(Uri.parse('https://web.dio.me'));
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
           ),
           const Divider(),
           InkWell(
@@ -90,7 +106,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                     Text("Abrir Google Maps"),
                   ],
                 )),
-            onTap: () {},
+            onTap: () async {
+              await launchUrl(
+                  Uri.parse('google.navigation:q=Orlando FL&mode=d'));
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
           ),
           const Divider(),
           InkWell(
@@ -112,12 +134,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   ],
                 )),
             onTap: () {
+              Share.share('Olhem esse site! https://web.dio.me');
               Navigator.pop(context);
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => const ConfiguracoesHivePage(),
-              //     ));
             },
           ),
           InkWell(
@@ -167,6 +185,12 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 )),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BatteryPage(),
+                ),
+              );
             },
           ),
           InkWell(
@@ -250,6 +274,202 @@ class _MenuDrawerState extends State<MenuDrawer> {
               }
               setState(() {});
               Navigator.pop(context);
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.folder,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Path Provider"),
+                  ],
+                )),
+            onTap: () async {
+              setState(() {});
+              var directory = await path_provider.getTemporaryDirectory();
+              directory = await path_provider.getApplicationSupportDirectory();
+              directory =
+                  await path_provider.getApplicationDocumentsDirectory();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.googlePlay,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Informações pacote"),
+                  ],
+                )),
+            onTap: () async {
+              PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+              String appName = packageInfo.appName;
+              String packageName = packageInfo.packageName;
+              String version = packageInfo.version;
+              String buildNumber = packageInfo.buildNumber;
+              print('$appName  $packageName  $version  $buildNumber');
+              print(Platform.operatingSystem);
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.mobileScreen,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Informações dispositivo"),
+                  ],
+                )),
+            onTap: () async {
+              DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+              if (Platform.isAndroid) {
+                AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+                print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
+              } else if (Platform.isIOS) {
+                IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+                print(
+                    'Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
+              } else {
+                WebBrowserInfo webBrowserInfo = await deviceInfo.webBrowserInfo;
+                print('Running on ${webBrowserInfo.userAgent}');
+              }
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.wifi,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Conectividade"),
+                  ],
+                )),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ConnectivityPlusPage(),
+                  ));
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.mapPin,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("GPS"),
+                  ],
+                )),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GeolocatorPage(),
+                  ));
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.qrcode,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("QR Code"),
+                  ],
+                )),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const QrCodePage(),
+                  ));
+            },
+          ),
+          InkWell(
+            child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                width: double.infinity,
+                child: const Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.camera,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Camera"),
+                  ],
+                )),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CameraPage(),
+                  ));
             },
           ),
         ],
